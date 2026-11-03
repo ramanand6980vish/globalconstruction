@@ -1,0 +1,23 @@
+
+# Eclipse workspace files
+.metadata/
+**/.metadata/
+.settings/
+.classpath
+.project
+
+# Java build files
+target/
+**/target/
+
+# Environment and secret files
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+
+# IDE files
+.idea/
+.vscode/

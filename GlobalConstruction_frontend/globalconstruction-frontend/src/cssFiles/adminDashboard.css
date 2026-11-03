@@ -1,0 +1,511 @@
+
+* {
+  box-sizing: border-box;
+}
+
+.admin-dashboard {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  background: #f5f8f7;
+  color: #263b35;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* SIDEBAR */
+
+.dashboard-sidebar {
+  width: 180px;
+  min-width: 180px;
+  background: #ffffff;
+  border-right: 1px solid #e4e9e7;
+  min-height: 100vh;
+}
+
+.dashboard-brand {
+  height: 78px;
+  padding: 13px 12px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  border-bottom: 1px solid #e9edeb;
+}
+
+.brand-logo {
+  font-size: 27px;
+  min-width: 35px;
+}
+
+.dashboard-brand h3 {
+  font-size: 11px;
+  line-height: 15px;
+  margin: 0;
+  font-weight: 700;
+  color: #243b34;
+}
+
+.contractor-label {
+  padding: 9px 14px 13px;
+  font-size: 10px;
+  color: #69756f;
+  border-bottom: 1px solid #edf0ee;
+}
+
+.dashboard-navigation {
+  padding: 9px 8px;
+}
+
+.dashboard-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 33px;
+  padding: 0 9px;
+  margin-bottom: 1px;
+  border-radius: 5px;
+  color: #505d57;
+  font-size: 11px;
+  text-decoration: none;
+  transition: 0.2s ease;
+}
+
+.dashboard-nav-item:hover {
+  background: #f0f6f1;
+  color: #347e42;
+}
+
+.dashboard-nav-item.active {
+  background: #edf5ee;
+  color: #347e42;
+  font-weight: 600;
+}
+
+.nav-icon {
+  width: 15px;
+  font-size: 15px;
+  text-align: center;
+}
+
+/* MAIN CONTENT */
+
+.dashboard-main {
+  flex: 1;
+  min-width: 0;
+}
+
+/* TOP HEADER */
+
+.dashboard-topbar {
+  height: 47px;
+  background: #ffffff;
+  border-bottom: 1px solid #e8ecea;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+}
+
+.dashboard-search {
+  width: 290px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f8f9f9;
+  border: 1px solid #e5e9e7;
+  border-radius: 7px;
+  padding: 0 10px;
+  color: #89958f;
+}
+
+.dashboard-search span {
+  font-size: 19px;
+}
+
+.dashboard-search input {
+  border: none;
+  outline: none;
+  background: transparent;
+  width: 100%;
+  font-size: 11px;
+  color: #34463e;
+}
+
+.dashboard-search input::placeholder {
+  color: #9aa39e;
+}
+
+.dashboard-user {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.notification-button {
+  position: relative;
+  border: none;
+  background: transparent;
+  font-size: 19px;
+  cursor: pointer;
+  color: #34443c;
+}
+
+.notification-dot {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: #d9534f;
+  border-radius: 50%;
+  top: 3px;
+  right: 2px;
+}
+
+.user-avatar {
+  height: 27px;
+  width: 27px;
+  border-radius: 50%;
+  background: #328444;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-information {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.user-information strong {
+  font-size: 10px;
+  color: #25382f;
+}
+
+.user-information span {
+  font-size: 9px;
+  color: #8a948e;
+}
+
+/* DASHBOARD CONTENT */
+
+.dashboard-content {
+  padding: 19px 18px 28px;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.dashboard-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.dashboard-heading h1 {
+  font-size: 19px;
+  margin: 0 0 5px;
+  font-weight: 700;
+  color: #263a32;
+}
+
+.dashboard-heading p {
+  font-size: 11px;
+  color: #737e78;
+  margin: 0;
+}
+
+.dashboard-date {
+  color: #89938e;
+  font-size: 10px;
+}
+
+/* SUMMARY CARDS */
+
+.dashboard-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.summary-card {
+  background: #ffffff;
+  border: 1px solid #e5eae7;
+  border-radius: 12px;
+  min-height: 91px;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 1px 3px rgba(25, 50, 35, 0.025);
+}
+
+.summary-label {
+  color: #75817a;
+  font-size: 10px;
+}
+
+.summary-card h2 {
+  color: #203b31;
+  font-size: 20px;
+  margin: 7px 0 5px;
+  font-weight: 700;
+}
+
+.summary-card p {
+  margin: 0;
+  font-size: 9px;
+  color: #859089;
+}
+
+.summary-icon {
+  height: 33px;
+  width: 33px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  font-size: 17px;
+}
+
+.summary-icon.green {
+  color: #418b4c;
+  background: #f0f6f0;
+}
+
+.summary-icon.red {
+  color: #c45c55;
+  background: #fbf1f0;
+}
+
+/* DASHBOARD PANELS */
+
+.dashboard-panels-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.dashboard-panel {
+  background: #ffffff;
+  border: 1px solid #e5eae7;
+  border-radius: 12px;
+  padding: 18px;
+  min-height: 180px;
+  box-shadow: 0 1px 3px rgba(25, 50, 35, 0.025);
+}
+
+.dashboard-panel h3 {
+  margin: 2px 0 9px;
+  color: #293d34;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.dashboard-data-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 39px;
+  border-bottom: 1px solid #edf0ee;
+  font-size: 10px;
+  color: #77827c;
+  gap: 10px;
+}
+
+.dashboard-data-row:last-child {
+  border-bottom: none;
+}
+
+.dashboard-data-row strong {
+  color: #293c33;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.empty-dashboard {
+  color: #929c96;
+  font-size: 11px;
+  margin-top: 20px;
+}
+
+/* PAYROLL PANEL */
+
+.payroll-panel {
+  min-height: 160px;
+}
+
+.payroll-month {
+  margin: 18px 0 10px;
+  font-size: 10px;
+  color: #78837c;
+}
+
+.payroll-status {
+  display: inline-block;
+  padding: 5px 10px;
+  background: #fff5e9;
+  color: #b87836;
+  font-size: 9px;
+  font-weight: 600;
+  border-radius: 15px;
+  text-transform: capitalize;
+}
+
+.payroll-status.paid {
+  background: #edf7ee;
+  color: #328044;
+}
+
+.payroll-status.processing {
+  background: #eef3fb;
+  color: #4b6eab;
+}
+
+.payroll-amount {
+  color: #34463d;
+  font-size: 10px;
+  margin: 9px 0;
+}
+
+.continue-payroll-button {
+  background: #398b36;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 13px;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.continue-payroll-button:hover {
+  background: #2d722c;
+}
+
+/* LOADING AND ERROR */
+
+.dashboard-message {
+  padding: 35px;
+  text-align: center;
+  color: #69776f;
+  background: #ffffff;
+  border-radius: 10px;
+}
+
+.dashboard-error {
+  background: #fff3f2;
+  border: 1px solid #f1d3d0;
+  color: #a33e37;
+  border-radius: 9px;
+  padding: 18px;
+  font-size: 12px;
+}
+
+.dashboard-error p {
+  margin: 7px 0;
+}
+
+.dashboard-error button {
+  padding: 7px 13px;
+  border: none;
+  border-radius: 5px;
+  background: #b94b43;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+/* RESPONSIVE */
+
+@media (min-width: 1500px) {
+  .dashboard-content {
+    padding: 25px 25px;
+  }
+
+  .dashboard-summary-grid {
+    gap: 16px;
+  }
+
+  .dashboard-panel {
+    min-height: 205px;
+  }
+}
+
+@media (max-width: 1000px) {
+  .dashboard-summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dashboard-panels-grid {
+    gap: 12px;
+  }
+}
+
+@media (max-width: 700px) {
+  .dashboard-sidebar {
+    width: 58px;
+    min-width: 58px;
+  }
+
+  .dashboard-brand {
+    justify-content: center;
+    padding: 8px 3px;
+  }
+
+  .dashboard-brand h3,
+  .contractor-label,
+  .dashboard-nav-item span:last-child {
+    display: none;
+  }
+
+  .dashboard-navigation {
+    padding: 10px 6px;
+  }
+
+  .dashboard-nav-item {
+    justify-content: center;
+    padding: 0;
+  }
+
+  .dashboard-nav-item .nav-icon {
+    font-size: 17px;
+  }
+
+  .dashboard-topbar {
+    padding: 0 10px;
+  }
+
+  .dashboard-search {
+    width: min(210px, 55%);
+  }
+
+  .dashboard-content {
+    padding: 16px 11px;
+  }
+
+  .dashboard-panels-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-heading h1 {
+    font-size: 17px;
+  }
+}
+
+@media (max-width: 430px) {
+  .dashboard-summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-user {
+    gap: 5px;
+  }
+
+  .user-information {
+    display: none;
+  }
+}

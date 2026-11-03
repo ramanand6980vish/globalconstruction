@@ -1,0 +1,268 @@
+
+.add-employee-page {
+  min-height: 100vh;
+  padding: 32px;
+  background: #f4f7fb;
+  color: #1e293b;
+  font-family: Arial, sans-serif;
+}
+
+.add-employee-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  margin-bottom: 28px;
+}
+
+.add-employee-eyebrow {
+  margin: 0 0 8px;
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+.add-employee-header h1 {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.add-employee-subtitle {
+  margin-top: 10px;
+  color: #64748b;
+  line-height: 1.6;
+}
+
+.ae-back-button,
+.ae-primary-button,
+.ae-secondary-button {
+  border: none;
+  border-radius: 8px;
+  padding: 12px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.ae-back-button,
+.ae-secondary-button {
+  color: #334155;
+  background: #e2e8f0;
+}
+
+.ae-back-button:hover,
+.ae-secondary-button:hover {
+  background: #cbd5e1;
+}
+
+.ae-primary-button {
+  color: #ffffff;
+  background: #2563eb;
+}
+
+.ae-primary-button:hover {
+  background: #1d4ed8;
+}
+
+.ae-primary-button:disabled,
+.ae-secondary-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.ae-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.ae-section,
+.ae-created-card {
+  padding: 26px;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+}
+
+.ae-section-heading {
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.ae-section-heading h2,
+.ae-created-card h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.ae-section-heading p {
+  margin: 8px 0 0;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.ae-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.ae-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ae-field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.ae-field label span {
+  color: #dc2626;
+}
+
+.ae-field input,
+.ae-field select {
+  width: 100%;
+  min-height: 44px;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  outline: none;
+  background: #ffffff;
+  color: #0f172a;
+  font-size: 14px;
+}
+
+.ae-field input:focus,
+.ae-field select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.ae-field input::placeholder {
+  color: #94a3b8;
+}
+
+.ae-field select:disabled {
+  background: #f1f5f9;
+  cursor: not-allowed;
+}
+
+.ae-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-bottom: 20px;
+}
+
+.ae-alert {
+  margin-bottom: 20px;
+  padding: 14px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.ae-alert-error {
+  color: #991b1b;
+  background: #fee2e2;
+  border: 1px solid #fecaca;
+}
+
+.ae-alert-success {
+  color: #166534;
+  background: #dcfce7;
+  border: 1px solid #bbf7d0;
+}
+
+.ae-created-card {
+  margin-bottom: 24px;
+  border-color: #86efac;
+  background: #f0fdf4;
+}
+
+.ae-created-card h2 {
+  color: #166534;
+  margin-bottom: 20px;
+}
+
+.ae-generated-ids {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.ae-generated-ids div {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.ae-generated-ids span {
+  color: #64748b;
+  font-size: 12px;
+}
+
+.ae-generated-ids strong {
+  color: #166534;
+  font-size: 18px;
+  overflow-wrap: anywhere;
+}
+
+.ae-loading-message {
+  color: #64748b;
+  text-align: center;
+  font-size: 14px;
+}
+
+@media (max-width: 1000px) {
+  .ae-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 650px) {
+  .add-employee-page {
+    padding: 18px;
+  }
+
+  .add-employee-header {
+    flex-direction: column;
+  }
+
+  .add-employee-header h1 {
+    font-size: 25px;
+  }
+
+  .ae-grid,
+  .ae-generated-ids {
+    grid-template-columns: 1fr;
+  }
+
+  .ae-section {
+    padding: 18px;
+  }
+
+  .ae-form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .ae-form-actions button {
+    width: 100%;
+  }
+}
+

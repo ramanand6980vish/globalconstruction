@@ -1,0 +1,13 @@
+
+body{
+    background-color: #f5f5f5;
+    font-family: Arial, sans-serif;
+}
+
+#admin_dashboard{
+    background-color: #849deb;
+    border: 1px solid #f72302; 
+    border-radius: 8px; 
+    display: flex;
+    
+}
