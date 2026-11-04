@@ -11,7 +11,11 @@ import com.globalconstruction.portal.designation.service.DesignationService;
 
 @RestController
 @RequestMapping("/api/designations")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins ={
+    "http://localhost:5173",
+    "https://globalconstruction.onrender.com"
+            
+             })
 public class DesignationController {
 
     private final DesignationService designationService;
