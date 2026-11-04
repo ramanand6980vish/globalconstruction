@@ -13,7 +13,8 @@ import com.globalconstruction.portal.dashboard.service.AdminDashboardService;
 @RequestMapping("/api/admin/dashboard")
 @CrossOrigin(origins = {
         "http://localhost:5173",
-        "http://127.0.0.1:5173"
+        "http://127.0.0.1:5173",
+        "https://globalconstruction.onrender.com"
 })
 public class AdminDashboardController {
 
