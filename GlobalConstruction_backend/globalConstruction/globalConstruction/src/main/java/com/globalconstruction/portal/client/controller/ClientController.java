@@ -14,7 +14,10 @@ import com.globalconstruction.portal.client.service.ClientService;
 
 @RestController
 @RequestMapping("/api/clients")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = {
+    "http://localhost:5173",
+    "https://globalconstruction.onrender.com"
+})
 public class ClientController {
 
     private final ClientService clientService;
