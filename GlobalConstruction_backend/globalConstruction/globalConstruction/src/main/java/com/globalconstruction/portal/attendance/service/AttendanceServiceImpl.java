@@ -1,48 +1,4 @@
 
-package com.globalconstruction.portal.attendance.service;
-
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
-
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.globalconstruction.portal.attendance.dto.AttendanceRequest;
-import com.globalconstruction.portal.attendance.dto.AttendanceRosterDTO;
-import com.globalconstruction.portal.attendance.dto.SiteOptionDTO;
-import com.globalconstruction.portal.attendance.mapper.AttendanceMapper;
-
-@Service
-public class AttendanceServiceImpl implements AttendanceService {
-
-	private final JdbcTemplate jdbcTemplate;
-	private final AttendanceMapper attendanceMapper;
-
-	public AttendanceServiceImpl(JdbcTemplate jdbcTemplate, AttendanceMapper attendanceMapper) {
-
-		this.jdbcTemplate = jdbcTemplate;
-		this.attendanceMapper = attendanceMapper;
-	}
-
-	@Override
-	public List<SiteOptionDTO> getActiveSites() {
-
-		String sql = """
-				SELECT site_id, site_code, site_name
-				FROM site
-				WHERE status = 'ACTIVE'
-				ORDER BY site_name
-				""";
-
-		return jdbcTemplate.query(sql, (rs, rowNum) -> new SiteOptionDTO(rs.getString("site_id"),
-				rs.getString("site_code"), rs.getString("site_name")));
-	}
-
 	
 package com.globalconstruction.portal.attendance.service;
 
@@ -224,22 +180,29 @@ public class AttendanceServiceImpl implements AttendanceService {
 			String attendanceId = attendanceIds.get(0);
 
 			jdbcTemplate.update("""
-					UPDATE attendance
-					SET attendance_status = ?,
-					    check_in_time = ?,
-					    check_out_time = ?,
-					    regular_hours = ?,
-					    half_day_hours = ?,
-					    overtime_hours = ?,
-					    remarks = ?,
-					    source = 'WEB',
-					    status = 'SUBMITTED',
-					    approved_by = NULL,
-					    approved_at = NULL,
-					    updated_at = ?
-					WHERE attendance_id = ?
-					""", attendanceStatus, checkIn, checkOut, regularHours, halfDayHours, overtimeHours,
-					request.getRemarks(), Timestamp.valueOf(now), attendanceId);
+    UPDATE attendance
+    SET attendance_status = ?,
+        check_in_time = ?,
+        check_out_time = ?,
+        regular_hours = ?,
+        half_day_hours = ?,
+        remarks = ?,
+        source = 'WEB',
+        status = 'SUBMITTED',
+        approved_by = NULL,
+        approved_at = NULL,
+        updated_at = ?
+    WHERE attendance_id = ?
+    """,
+    attendanceStatus,
+    checkIn,
+    checkOut,
+    regularHours,
+    halfDayHours,
+    request.getRemarks(),
+    Timestamp.valueOf(now),
+    attendanceId
+);
 
 		} else {
 
@@ -248,31 +211,40 @@ public class AttendanceServiceImpl implements AttendanceService {
 					+ UUID.randomUUID().toString().substring(0, 8).toUpperCase();
 
 			jdbcTemplate.update("""
-					INSERT INTO attendance (
-					    attendance_id,
-					    employee_id,
-					    site_id,
-					    site_code,
-					    attendance_date,
-					    attendance_status,
-					    check_in_time,
-					    check_out_time,
-					    regular_hours,
-					    half_day_hours,
-					    overtime_hours,
-					    remarks,
-					    source,
-					    status,
-					    created_at,
-					    updated_at
-					)
-					VALUES (
-					    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-					    ?, 'WEB', 'SUBMITTED', ?, ?
-					)
-					""", attendanceId, employeeId, siteId, siteCode, attendanceDate, attendanceStatus, checkIn,
-					checkOut, regularHours, halfDayHours, overtimeHours, request.getRemarks(), Timestamp.valueOf(now),
-					Timestamp.valueOf(now));
+    INSERT INTO attendance (
+        attendance_id,
+        employee_id,
+        site_id,
+        attendance_date,
+        attendance_status,
+        check_in_time,
+        check_out_time,
+        regular_hours,
+        half_day_hours,
+        remarks,
+        source,
+        status,
+        created_at,
+        updated_at
+    )
+    VALUES (
+        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+        'WEB', 'SUBMITTED', ?, ?
+    )
+    """,
+    attendanceId,
+    employeeId,
+    siteId,
+    attendanceDate,
+    attendanceStatus,
+    checkIn,
+    checkOut,
+    regularHours,
+    halfDayHours,
+    request.getRemarks(),
+    Timestamp.valueOf(now),
+    Timestamp.valueOf(now)
+);
 		}
 
 		// Return the updated roster row.
