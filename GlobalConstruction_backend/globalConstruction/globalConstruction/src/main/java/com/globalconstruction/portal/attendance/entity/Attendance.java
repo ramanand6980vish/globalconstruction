@@ -1,3 +1,4 @@
+
 package com.globalconstruction.portal.attendance.entity;
 
 import java.math.BigDecimal;
@@ -21,12 +22,10 @@ public class Attendance {
 
     @Column(name = "employee_id", nullable = false, length = 50)
     private String employeeId;
-    
+
     @Column(name = "site_id", nullable = false, length = 50)
     private String siteId;
 
-   
- 
     @Column(name = "attendance_date", nullable = false)
     private LocalDate attendanceDate;
 
@@ -69,9 +68,6 @@ public class Attendance {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
-	@Column(name = "overtime_hours", precision = 4, scale = 2)
-private BigDecimal overtimeHours;
-
     public Attendance() {
     }
 
@@ -90,17 +86,14 @@ private BigDecimal overtimeHours;
     public void setEmployeeId(String employeeId) {
         this.employeeId = employeeId;
     }
-    
+
     public String getSiteId() {
-		return siteId;
-	}
+        return siteId;
+    }
 
-	public void setSiteId(String siteId) {
-		this.siteId = siteId;
-	}
- 
-
-   
+    public void setSiteId(String siteId) {
+        this.siteId = siteId;
+    }
 
     public LocalDate getAttendanceDate() {
         return attendanceDate;
@@ -205,12 +198,4 @@ private BigDecimal overtimeHours;
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
-
-	public BigDecimal getOvertimeHours() {
-    return overtimeHours;
-}
-
-public void setOvertimeHours(BigDecimal overtimeHours) {
-    this.overtimeHours = overtimeHours;
-}
 }
