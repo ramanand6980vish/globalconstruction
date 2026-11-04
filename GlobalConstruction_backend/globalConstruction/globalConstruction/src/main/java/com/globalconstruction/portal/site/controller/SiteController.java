@@ -17,7 +17,8 @@ import com.globalconstruction.portal.site.service.SiteService;
 @CrossOrigin(origins = {
     "http://localhost:5173",
     "https://your-vercel-domain.vercel.app",
-    "https://globalconstruction.onrender.com"
+    "https://globalconstruction.onrender.com",
+    "*"
 })
 public class SiteController {
 
