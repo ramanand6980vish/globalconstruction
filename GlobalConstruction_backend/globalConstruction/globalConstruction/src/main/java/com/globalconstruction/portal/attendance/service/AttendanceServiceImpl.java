@@ -82,7 +82,11 @@ public class AttendanceServiceImpl implements AttendanceService {
 			        a.check_out_time,
 			        a.regular_hours,
 			        a.half_day_hours,
-			        a.overtime_hours,
+			        COALESCE((
+				    SELECT SUM(o.hours)
+				    FROM overtime o
+				    WHERE o.attendance_id = a.attendance_id
+				), 0) AS overtime_hours,
 			        a.remarks,
 			        a.source,
 			        a.status AS approval_status
