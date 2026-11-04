@@ -69,6 +69,9 @@ public class Attendance {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
+	@Column(name = "overtime_hours", precision = 4, scale = 2)
+private BigDecimal overtimeHours;
+
     public Attendance() {
     }
 
@@ -202,4 +205,12 @@ public class Attendance {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+	public BigDecimal getOvertimeHours() {
+    return overtimeHours;
+}
+
+public void setOvertimeHours(BigDecimal overtimeHours) {
+    this.overtimeHours = overtimeHours;
+}
 }
