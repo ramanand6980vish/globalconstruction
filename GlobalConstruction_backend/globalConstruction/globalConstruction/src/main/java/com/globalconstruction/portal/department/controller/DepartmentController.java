@@ -13,7 +13,8 @@ import com.globalconstruction.portal.department.service.DepartmentService;
 @RequestMapping("/api/departments")
 @CrossOrigin(origins = {
     "http://localhost:5173",
-    "https://your-vercel-domain.vercel.app"
+    "https://your-vercel-domain.vercel.app",
+    "https://globalconstruction.onrender.com"
 })
 public class DepartmentController {
 
