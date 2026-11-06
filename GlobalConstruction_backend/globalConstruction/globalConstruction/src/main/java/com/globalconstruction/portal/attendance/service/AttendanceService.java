@@ -1,23 +1,19 @@
-
 package com.globalconstruction.portal.attendance.service;
 
 import java.time.LocalDate;
 import java.util.List;
 
+import com.globalconstruction.portal.attendance.dto.AttendanceInitialDataDTO;
 import com.globalconstruction.portal.attendance.dto.AttendanceRequest;
 import com.globalconstruction.portal.attendance.dto.AttendanceRosterDTO;
-import com.globalconstruction.portal.attendance.dto.SiteOptionDTO;
 
 public interface AttendanceService {
 
-    List<SiteOptionDTO> getActiveSites();
+    AttendanceInitialDataDTO getInitialData();
 
-    List<AttendanceRosterDTO> getRoster(
-            LocalDate date,
-            String siteCode
-    );
+    List<AttendanceRosterDTO> getAttendanceRecords(
+            LocalDate date);
 
     AttendanceRosterDTO markAttendance(
-            AttendanceRequest request
-    );
+            AttendanceRequest request);
 }
