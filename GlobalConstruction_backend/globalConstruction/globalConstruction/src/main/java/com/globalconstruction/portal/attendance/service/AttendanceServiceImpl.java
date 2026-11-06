@@ -1,4 +1,3 @@
-
 package com.globalconstruction.portal.attendance.service;
 
 import java.math.BigDecimal;
@@ -12,6 +11,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.globalconstruction.portal.attendance.dto.AttendanceEmployeeDTO;
+import com.globalconstruction.portal.attendance.dto.AttendanceInitialDataDTO;
 import com.globalconstruction.portal.attendance.dto.AttendanceRequest;
 import com.globalconstruction.portal.attendance.dto.AttendanceRosterDTO;
 import com.globalconstruction.portal.attendance.dto.SiteOptionDTO;
@@ -31,38 +32,90 @@ public class AttendanceServiceImpl implements AttendanceService {
         this.attendanceMapper = attendanceMapper;
     }
 
-    @Override
-    public List<SiteOptionDTO> getActiveSites() {
+    // =====================================================
+    // INITIAL DATA: EMPLOYEES + SITES
+    // =====================================================
 
-        String sql = """
-                SELECT site_id, site_code, site_name
+    @Override
+    public AttendanceInitialDataDTO getInitialData() {
+
+        String employeeSql = """
+                SELECT
+                    e.employee_id,
+                    e.employee_code,
+
+                    TRIM(CONCAT_WS(' ',
+                        e.first_name,
+                        NULLIF(e.middle_name, ''),
+                        NULLIF(e.last_name, '')
+                    )) AS employee_name,
+
+                    COALESCE(d.department_name, 'N/A') AS department,
+                    COALESCE(des.designation_name, 'N/A') AS designation
+
+                FROM employee e
+
+                LEFT JOIN department d
+                    ON d.department_id = e.department_id
+
+                LEFT JOIN designation des
+                    ON des.designation_id = e.designation_id
+
+                WHERE e.status = 'ACTIVE'
+
+                ORDER BY e.employee_code
+                """;
+
+        List<AttendanceEmployeeDTO> employees =
+                jdbcTemplate.query(employeeSql, (rs, rowNum) ->
+                        new AttendanceEmployeeDTO(
+                                rs.getString("employee_id"),
+                                rs.getString("employee_code"),
+                                rs.getString("employee_name"),
+                                rs.getString("department"),
+                                rs.getString("designation")
+                        )
+                );
+
+        String siteSql = """
+                SELECT
+                    site_id,
+                    site_code,
+                    site_name
+
                 FROM site
+
                 WHERE status = 'ACTIVE'
+
                 ORDER BY site_name
                 """;
 
-        return jdbcTemplate.query(sql, (rs, rowNum) ->
-                new SiteOptionDTO(
-                        rs.getString("site_id"),
-                        rs.getString("site_code"),
-                        rs.getString("site_name")
-                )
+        List<SiteOptionDTO> sites =
+                jdbcTemplate.query(siteSql, (rs, rowNum) ->
+                        new SiteOptionDTO(
+                                rs.getString("site_id"),
+                                rs.getString("site_code"),
+                                rs.getString("site_name")
+                        )
+                );
+
+        return new AttendanceInitialDataDTO(
+                employees,
+                sites
         );
     }
 
+    // =====================================================
+    // ATTENDANCE RECORDS FOR SELECTED DATE
+    // =====================================================
+
     @Override
-    public List<AttendanceRosterDTO> getRoster(
-            LocalDate date,
-            String siteCode) {
+    public List<AttendanceRosterDTO> getAttendanceRecords(
+            LocalDate date) {
 
         if (date == null) {
             throw new IllegalArgumentException(
                     "Attendance date is required.");
-        }
-
-        if (isBlank(siteCode)) {
-            throw new IllegalArgumentException(
-                    "Site code is required.");
         }
 
         String sql = """
@@ -85,7 +138,7 @@ public class AttendanceServiceImpl implements AttendanceService {
                     s.site_code,
                     s.site_name,
 
-                    ? AS attendance_date,
+                    a.attendance_date,
 
                     a.attendance_status,
                     a.check_in_time,
@@ -103,14 +156,13 @@ public class AttendanceServiceImpl implements AttendanceService {
                     a.source,
                     a.status AS approval_status
 
-                FROM employee e
+                FROM attendance a
 
-                CROSS JOIN site s
+                INNER JOIN employee e
+                    ON e.employee_id = a.employee_id
 
-                LEFT JOIN attendance a
-                    ON a.employee_id = e.employee_id
-                    AND a.site_id = s.site_id
-                    AND a.attendance_date = ?
+                INNER JOIN site s
+                    ON s.site_id = a.site_id
 
                 LEFT JOIN department d
                     ON d.department_id = e.department_id
@@ -118,21 +170,21 @@ public class AttendanceServiceImpl implements AttendanceService {
                 LEFT JOIN designation des
                     ON des.designation_id = e.designation_id
 
-                WHERE e.status = 'ACTIVE'
-                    AND s.status = 'ACTIVE'
-                    AND s.site_code = ?
+                WHERE a.attendance_date = ?
 
-                ORDER BY e.employee_code
+                ORDER BY s.site_name, e.employee_code
                 """;
 
         return jdbcTemplate.query(
                 sql,
                 attendanceMapper,
-                date,
-                date,
-                siteCode.trim()
+                date
         );
     }
+
+    // =====================================================
+    // MARK / UPDATE ATTENDANCE
+    // =====================================================
 
     @Override
     @Transactional
@@ -144,36 +196,38 @@ public class AttendanceServiceImpl implements AttendanceService {
         String employeeId = request.getEmployeeId().trim();
         String siteCode = request.getSiteCode().trim();
 
-        LocalDate attendanceDate = request.getAttendanceDate();
+        LocalDate attendanceDate =
+                request.getAttendanceDate();
 
-        // Verify employee.
-        Integer employeeCount = jdbcTemplate.queryForObject(
-                """
-                SELECT COUNT(*)
-                FROM employee
-                WHERE employee_id = ?
-                  AND status = 'ACTIVE'
-                """,
-                Integer.class,
-                employeeId
-        );
+        Integer employeeCount =
+                jdbcTemplate.queryForObject(
+                        """
+                        SELECT COUNT(*)
+                        FROM employee
+                        WHERE employee_id = ?
+                          AND status = 'ACTIVE'
+                        """,
+                        Integer.class,
+                        employeeId
+                );
 
         if (employeeCount == null || employeeCount == 0) {
             throw new IllegalArgumentException(
                     "Active employee not found.");
         }
 
-        // Verify site and retrieve site ID.
-        List<String> siteIds = jdbcTemplate.query(
-                """
-                SELECT site_id
-                FROM site
-                WHERE site_code = ?
-                  AND status = 'ACTIVE'
-                """,
-                (rs, rowNum) -> rs.getString("site_id"),
-                siteCode
-        );
+        List<String> siteIds =
+                jdbcTemplate.query(
+                        """
+                        SELECT site_id
+                        FROM site
+                        WHERE site_code = ?
+                          AND status = 'ACTIVE'
+                        """,
+                        (rs, rowNum) ->
+                                rs.getString("site_id"),
+                        siteCode
+                );
 
         if (siteIds.isEmpty()) {
             throw new IllegalArgumentException(
@@ -182,21 +236,22 @@ public class AttendanceServiceImpl implements AttendanceService {
 
         String siteId = siteIds.get(0);
 
-        // Check whether attendance already exists.
-        List<String> attendanceIds = jdbcTemplate.query(
-                """
-                SELECT attendance_id
-                FROM attendance
-                WHERE employee_id = ?
-                  AND site_id = ?
-                  AND attendance_date = ?
-                LIMIT 1
-                """,
-                (rs, rowNum) -> rs.getString("attendance_id"),
-                employeeId,
-                siteId,
-                attendanceDate
-        );
+        List<String> attendanceIds =
+                jdbcTemplate.query(
+                        """
+                        SELECT attendance_id
+                        FROM attendance
+                        WHERE employee_id = ?
+                          AND site_id = ?
+                          AND attendance_date = ?
+                        LIMIT 1
+                        """,
+                        (rs, rowNum) ->
+                                rs.getString("attendance_id"),
+                        employeeId,
+                        siteId,
+                        attendanceDate
+                );
 
         String attendanceStatus =
                 request.getAttendanceStatus()
@@ -227,11 +282,12 @@ public class AttendanceServiceImpl implements AttendanceService {
 
         if (!attendanceIds.isEmpty()) {
 
-            // Update existing attendance.
-            String attendanceId = attendanceIds.get(0);
+            String attendanceId =
+                    attendanceIds.get(0);
 
             String updateSql = """
                     UPDATE attendance
+
                     SET attendance_status = ?,
                         check_in_time = ?,
                         check_out_time = ?,
@@ -243,6 +299,7 @@ public class AttendanceServiceImpl implements AttendanceService {
                         approved_by = NULL,
                         approved_at = NULL,
                         updated_at = ?
+
                     WHERE attendance_id = ?
                     """;
 
@@ -260,10 +317,10 @@ public class AttendanceServiceImpl implements AttendanceService {
 
         } else {
 
-            // Insert new attendance.
             String attendanceId =
                     "ATT-"
-                    + attendanceDate.toString().replace("-", "")
+                    + attendanceDate.toString()
+                            .replace("-", "")
                     + "-"
                     + UUID.randomUUID()
                             .toString()
@@ -287,6 +344,7 @@ public class AttendanceServiceImpl implements AttendanceService {
                         created_at,
                         updated_at
                     )
+
                     VALUES (
                         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
                         'WEB', 'SUBMITTED', ?, ?
@@ -310,18 +368,24 @@ public class AttendanceServiceImpl implements AttendanceService {
             );
         }
 
-        // Return updated roster row.
-        return getRoster(attendanceDate, siteCode)
+        // Return the saved record for this employee and site.
+        return getAttendanceRecords(attendanceDate)
                 .stream()
                 .filter(row ->
-                        employeeId.equals(row.getEmployeeId()))
+                        employeeId.equals(row.getEmployeeId())
+                        && siteId.equals(row.getSiteId()))
                 .findFirst()
                 .orElseThrow(() ->
                         new IllegalStateException(
-                                "Attendance saved, but roster row was not found."));
+                                "Attendance saved, but record was not found."));
     }
 
-    private void validateRequest(AttendanceRequest request) {
+    // =====================================================
+    // VALIDATION
+    // =====================================================
+
+    private void validateRequest(
+            AttendanceRequest request) {
 
         if (request == null) {
             throw new IllegalArgumentException(
@@ -357,9 +421,10 @@ public class AttendanceServiceImpl implements AttendanceService {
                 "WEEK_OFF"
         );
 
-        String status = request.getAttendanceStatus()
-                .trim()
-                .toUpperCase();
+        String status =
+                request.getAttendanceStatus()
+                        .trim()
+                        .toUpperCase();
 
         if (!allowedStatuses.contains(status)) {
             throw new IllegalArgumentException(
@@ -368,18 +433,15 @@ public class AttendanceServiceImpl implements AttendanceService {
 
         validateHours(
                 request.getRegularHours(),
-                "Regular hours"
-        );
+                "Regular hours");
 
         validateHours(
                 request.getHalfDayHours(),
-                "Half-day hours"
-        );
+                "Half-day hours");
 
         validateHours(
                 request.getOvertimeHours(),
-                "Overtime hours"
-        );
+                "Overtime hours");
 
         if (request.getCheckInTime() != null
                 && request.getCheckOutTime() != null
@@ -397,7 +459,8 @@ public class AttendanceServiceImpl implements AttendanceService {
 
         if (value != null
                 && (value.compareTo(BigDecimal.ZERO) < 0
-                || value.compareTo(new BigDecimal("99.99")) > 0
+                || value.compareTo(
+                        new BigDecimal("99.99")) > 0
                 || value.scale() > 2)) {
 
             throw new IllegalArgumentException(
@@ -407,13 +470,18 @@ public class AttendanceServiceImpl implements AttendanceService {
         }
     }
 
-    private BigDecimal zeroIfNull(BigDecimal value) {
+    private BigDecimal zeroIfNull(
+            BigDecimal value) {
+
         return value == null
                 ? BigDecimal.ZERO
                 : value;
     }
 
-    private boolean isBlank(String value) {
-        return value == null || value.trim().isEmpty();
+    private boolean isBlank(
+            String value) {
+
+        return value == null
+                || value.trim().isEmpty();
     }
 }
