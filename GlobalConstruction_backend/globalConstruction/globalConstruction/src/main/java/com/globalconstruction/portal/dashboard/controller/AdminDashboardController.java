@@ -15,7 +15,8 @@ import com.globalconstruction.portal.dashboard.service.AdminDashboardService;
         "http://localhost:5173",
         "http://127.0.0.1:5173",
          "http://localhost:5175",
-        "https://globalconstruction.onrender.com"
+        "https://globalconstruction.onrender.com",
+        "global-construction-portal.vercel.app"
 })
 public class AdminDashboardController {
 
