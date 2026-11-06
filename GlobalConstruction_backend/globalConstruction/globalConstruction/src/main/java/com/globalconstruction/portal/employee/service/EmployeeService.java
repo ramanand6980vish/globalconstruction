@@ -1,31 +1,11 @@
-package com.globalconstruction.portal.employee.service;
+EmployeeResponse getById(String employeeId);
 
-import java.util.List;
-import java.util.UUID;
+EmployeeResponse getByEmployeeCode(String employeeCode);
 
-import com.globalconstruction.portal.employee.dto.EmployeeRequest;
-import com.globalconstruction.portal.employee.dto.EmployeeResponse;
-import com.globalconstruction.portal.employee.entity.EmployeeStatus;
+List<EmployeeResponse> getByCompany(String companyId);
 
-public interface EmployeeService {
+List<EmployeeResponse> getByDepartment(String departmentId);
 
-	EmployeeResponse create(EmployeeRequest request);
+List<EmployeeResponse> getByDesignation(String designationId);
 
-	EmployeeResponse update(String employeeId, EmployeeRequest request);
-
-	EmployeeResponse getById(String employeeId);
-
-	EmployeeResponse getByEmployeeCode(String employeeCode);
-
-	List<EmployeeResponse> getAll();
-
-	List<EmployeeResponse> getByCompany(String companyId);
-
-	List<EmployeeResponse> getByDepartment(String departmentId);
-
-	List<EmployeeResponse> getByDesignation(String designationId);
-
-	List<EmployeeResponse> getByStatus(EmployeeStatus status);
-
-	void delete(String employeeId);
-}
+List<EmployeeResponse> getByStatus(EmployeeStatus status);
